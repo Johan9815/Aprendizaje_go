@@ -10,8 +10,8 @@ func UserRoutes(e *echo.Echo) {
 	userGrpup := e.Group("/user")
 
 	userGrpup.POST("/getUser", controller.GetUser)
-	userGrpup.POST("/AddUser", controller.Add, jwtmiddleware.JWTmiddleware())
-	userGrpup.GET("/getAlluser", controller.GetAll, jwtmiddleware.JWTmiddleware())
+	userGrpup.POST("/AddUser", controller.Add)
+	userGrpup.GET("/getAlluser", controller.GetAll /*jwtmiddleware.JWTmiddleware()*/)
 	userGrpup.PATCH("/updateUser", controller.UpdateUser, jwtmiddleware.JWTmiddleware())
 	userGrpup.DELETE("/deleteUser", controller.DeleteUser, jwtmiddleware.JWTmiddleware())
 	userGrpup.POST("/upload", controller.UploadImages, jwtmiddleware.JWTmiddleware())

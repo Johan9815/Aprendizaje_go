@@ -39,7 +39,7 @@ func GetAll() ([]structures.User, error) {
 	db := conex.Conex()
 
 	q := `SELECT * FROM users`
-	// Ejecutamos la query
+
 	rows, err := db.Query(q)
 	if err != nil {
 		return []structures.User{}, err
@@ -71,7 +71,7 @@ func GetAll() ([]structures.User, error) {
 
 }
 
-func Add(user structures.User) (int64, error) {
+func Add(user structures.User) (structures.User, error) {
 
 	db := conex.Conex()
 
@@ -90,23 +90,23 @@ func Add(user structures.User) (int64, error) {
 	defer rows.Close()
 
 	if len(data) > 0 {
-		return 0, nil
+		return data[0], fmt.Errorf("El usuario ya se encuentra registrado")
 	}
 
 	rows2, err := db.Exec("INSERT INTO users (user,pass) VALUES (?,?)", user.User, user.Pass)
 
 	if err != nil {
-		return 0, err
+		return structures.User{}, err
 	}
 
 	id, err := rows2.LastInsertId()
 
 	if err != nil {
-		return 0, err
+		return structures.User{}, err
 	}
-
+	user.Id = int(id)
 	db.Close()
-	return id, nil
+	return user, nil
 
 }
 

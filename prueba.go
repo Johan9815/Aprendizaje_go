@@ -56,6 +56,10 @@ func main() {
 	//fmt.Println(p.Getname())
 	//e.Setid(1)
 	//fmt.Println(e.Getid())
+
+	func() {
+
+	}()
 }
 
 func (e *Employee) Getid() int {

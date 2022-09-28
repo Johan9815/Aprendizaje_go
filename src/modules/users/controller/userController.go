@@ -5,7 +5,8 @@ import (
 	"net/http"
 
 	"github.com/johan9815/aprendizaje_go/src/modules/users/models"
-	"github.com/johan9815/aprendizaje_go/src/modules/users/structures"
+
+	. "github.com/johan9815/aprendizaje_go/src/modules/users/structures"
 	"github.com/johan9815/aprendizaje_go/src/utils"
 
 	"github.com/golang-jwt/jwt"
@@ -14,7 +15,7 @@ import (
 
 func GetUser(c echo.Context) error {
 
-	u := new(structures.User)
+	u := new(User)
 
 	if err := c.Bind(u); err != nil {
 		return err
@@ -45,7 +46,7 @@ func GetUser(c echo.Context) error {
 
 func GetAll(c echo.Context) error {
 
-	u := new(structures.User)
+	u := new(User)
 
 	if err := c.Bind(u); err != nil {
 		return err
@@ -74,28 +75,23 @@ func GetAll(c echo.Context) error {
 
 func Add(c echo.Context) error {
 
-	u := new(structures.User)
+	u := new(User)
 	if err := c.Bind(u); err != nil {
 		return err
 	}
 
-	id, err := models.Add(*u)
+	user, err := models.Add(*u)
 
 	if err != nil {
-		return c.JSON(http.StatusInternalServerError, echo.Map{"status": "fail", "message": "Ha ocurrido un error en el servidor"})
+		return c.JSON(http.StatusBadRequest, echo.Map{"status": "fail", "message": err})
 	}
 
-	if id > 0 {
-		return c.JSON(http.StatusOK, echo.Map{"status": "OK", "message": "Usuario creado con exito", "data": id})
-	} else if id == 0 {
-		return c.JSON(http.StatusConflict, echo.Map{"status": "fail", "message": "El usuario ya se encuentra registrado"})
-	}
-	return c.JSON(http.StatusInternalServerError, echo.Map{"status": "fail", "message": "Ha ocurrido un error"})
+	return c.JSON(http.StatusOK, echo.Map{"status": "OK", "message": "Usuario creado con exito", "data": user})
 
 }
 
 func UpdateUser(c echo.Context) error {
-	u := new(structures.User)
+	u := new(User)
 	if err := c.Bind(u); err != nil {
 		return err
 	}
@@ -112,7 +108,7 @@ func UpdateUser(c echo.Context) error {
 
 func DeleteUser(c echo.Context) error {
 
-	u := new(structures.User)
+	u := new(User)
 
 	if err := c.Bind(u); err != nil {
 		return err
@@ -151,7 +147,7 @@ func UploadImages(c echo.Context) error {
 
 func GetToken(c echo.Context) error {
 	user := c.Get("user").(*jwt.Token)
-	claims := user.Claims.(*structures.User)
+	claims := user.Claims.(*User)
 	//name := claims.Conocimientos
 	return c.JSON(http.StatusOK, echo.Map{
 		"user": claims.User,
